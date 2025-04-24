@@ -1,3 +1,8 @@
+use std::fs;
+use std::path::PathBuf;
+
+use dirs;
+
 use crate::models::{Identifier, Item};
 
 pub fn resolve_identifier(name: Option<String>, id: Option<i32>) -> Option<Identifier> {
@@ -25,4 +30,11 @@ pub fn print_item(item: Item) {
     };
 
     println!("{} {}: {}{}", checked, id, name, description);
+}
+
+pub fn create_app_directory() -> std::io::Result<PathBuf> {
+    let home_dir = dirs::home_dir().expect("Failed to determine home directory");
+    let app_path = home_dir.join(".local").join("share").join("todo");
+    fs::create_dir_all(&app_path)?;
+    Ok(app_path)
 }
