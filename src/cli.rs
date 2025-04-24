@@ -1,5 +1,4 @@
 use clap::{Parser, Subcommand};
-use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
 #[command(name = "todo")]
@@ -7,10 +6,6 @@ use std::path::PathBuf;
 pub struct Cli {
     #[command(subcommand)]
     pub command: Command,
-
-    // Path to the database
-    #[arg(short = 'D', long, default_value = "./todo.db")]
-    pub database: PathBuf,
 }
 
 #[derive(Debug, Subcommand)]
