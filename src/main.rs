@@ -16,7 +16,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     database::initialize_database(&connection)?;
 
     match arguments.command {
-        Command::Add { name, description } => commands::add::run(connection, name, description)?,
+        Command::Add {
+            name,
+            description,
+            due_date,
+        } => commands::add::run(connection, name, description, due_date)?,
         Command::Complete { name, id } => commands::complete::run(connection, name, id)?,
         Command::Remove { name, id } => commands::remove::run(connection, name, id)?,
         Command::List { all } => commands::list::run(connection, all)?,

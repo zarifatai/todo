@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
+use chrono::NaiveDateTime;
 use dirs;
 
 use crate::models::{Identifier, Item};
@@ -45,4 +46,11 @@ pub fn is_valid_sqlite_column_name(name: &str) -> bool {
 
     (first_char.is_alphabetic() || first_char == '_')
         && name.chars().all(|c| c.is_alphanumeric() || c == '_')
+}
+
+pub fn parse_datetime_str(due_date_string: Option<String>) -> Option<NaiveDateTime> {
+    due_date_string.and_then(|x| {
+        let datetime_format = "%Y-%m-%d %H:%M:%S";
+        NaiveDateTime::parse_from_str(&x, datetime_format).ok()
+    })
 }

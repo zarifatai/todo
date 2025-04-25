@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use rusqlite::{Connection, Result};
 
 use crate::models::{Item, SqliteColumn};
@@ -60,10 +61,21 @@ pub fn add_column_to_item_table(connection: &Connection, column: SqliteColumn) -
     Ok(())
 }
 
-pub fn add_item(connection: Connection, name: String, description: Option<String>) -> Result<()> {
+pub fn add_item(
+    connection: Connection,
+    name: String,
+    description: Option<String>,
+    create_date: NaiveDateTime,
+    due_date: Option<NaiveDateTime>,
+) -> Result<()> {
     connection.execute(
-        "INSERT INTO item (name, description) VALUES (?1, ?2);",
-        (name, description),
+        "INSERT INTO item (name, description, create_date, due_date) VALUES (?1, ?2, ?3, ?4);",
+        (
+            name,
+            description,
+            create_date.to_string(),
+            due_date.and_then(|x| Some(x.to_string())),
+        ),
     )?;
     Ok(())
 }
