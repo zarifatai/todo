@@ -15,8 +15,11 @@ pub enum Command {
         #[arg(short = 'N', long)]
         name: String,
 
-        #[arg(short = 'D', long)]
+        #[arg(short = 'd', long)]
         description: Option<String>,
+
+        #[arg(short = 'D', long)]
+        due_date: Option<String>,
     },
 
     // Completes a todo item given an id or name
