@@ -38,3 +38,11 @@ pub fn create_app_directory() -> std::io::Result<PathBuf> {
     fs::create_dir_all(&app_path)?;
     Ok(app_path)
 }
+
+pub fn is_valid_sqlite_column_name(name: &str) -> bool {
+    // Only allow alphanumeric and underscore, must start with a letter or underscore
+    let first_char = name.chars().next().unwrap_or(' ');
+
+    (first_char.is_alphabetic() || first_char == '_')
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_')
+}
