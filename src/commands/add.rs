@@ -1,8 +1,7 @@
-use chrono::Local;
+use chrono::{Local, NaiveDate, NaiveDateTime};
 use rusqlite::{Connection, Result};
 
 use crate::database;
-use crate::utils;
 
 pub fn run(
     connection: Connection,
@@ -11,8 +10,24 @@ pub fn run(
     due_date: Option<String>,
 ) -> Result<()> {
     let create_date = Local::now().naive_local();
-    let due_date = utils::parse_datetime_str(due_date);
+    let due_date = parse_datetime_str(due_date);
     database::operations::add_item(connection, name, description, create_date, due_date)?;
     println!("Item added!");
     Ok(())
+}
+
+fn parse_datetime_str(due_date_string: Option<String>) -> Option<NaiveDateTime> {
+    let s = due_date_string?;
+
+    if let Ok(dt) = NaiveDateTime::parse_from_str(&s, "%Y-%m-%d %H:%M") {
+        Some(dt)
+    } else {
+        match NaiveDate::parse_from_str(&s, "%Y-%m-%d") {
+            Ok(d) => d.and_hms_opt(0, 0, 0),
+            Err(e) => {
+                eprintln!("Failed to parse datetime {}: {}", s, e);
+                None
+            }
+        }
+    }
 }

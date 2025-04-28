@@ -1,10 +1,9 @@
 use std::fs;
 use std::path::PathBuf;
 
-use chrono::{NaiveDate, NaiveDateTime};
 use dirs;
 
-use crate::models::{Identifier, Item};
+use crate::models::Identifier;
 
 pub fn resolve_identifier(name: Option<String>, id: Option<i32>) -> Option<Identifier> {
     match (id, name) {
@@ -12,25 +11,6 @@ pub fn resolve_identifier(name: Option<String>, id: Option<i32>) -> Option<Ident
         (None, Some(name)) => Some(Identifier::Name(name)),
         _ => None,
     }
-}
-
-pub fn print_item(item: Item) {
-    let mut checked = "[ ]";
-    if !item.active {
-        checked = "[x]";
-    }
-
-    let name = item.name;
-    let id = item.id;
-
-    let description = item.description.unwrap_or_default();
-    let description = if description.is_empty() {
-        "".to_string()
-    } else {
-        format!(": {}", description)
-    };
-
-    println!("{} {}: {}{}", checked, id, name, description);
 }
 
 pub fn create_app_directory() -> std::io::Result<PathBuf> {
@@ -46,20 +26,4 @@ pub fn is_valid_sqlite_column_name(name: &str) -> bool {
 
     (first_char.is_alphabetic() || first_char == '_')
         && name.chars().all(|c| c.is_alphanumeric() || c == '_')
-}
-
-pub fn parse_datetime_str(due_date_string: Option<String>) -> Option<NaiveDateTime> {
-    let s = due_date_string?;
-
-    if let Ok(dt) = NaiveDateTime::parse_from_str(&s, "%Y-%m-%d %H:%M") {
-        Some(dt)
-    } else {
-        match NaiveDate::parse_from_str(&s, "%Y-%m-%d") {
-            Ok(d) => d.and_hms_opt(0, 0, 0),
-            Err(e) => {
-                eprintln!("Failed to parse datetime {}: {}", s, e);
-                None
-            }
-        }
-    }
 }
