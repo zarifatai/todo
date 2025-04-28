@@ -12,32 +12,29 @@ pub struct Cli {
 pub enum Command {
     // Adds a new todo item
     Add {
-        #[arg(short = 'N', long)]
         name: String,
 
         #[arg(short = 'd', long)]
         description: Option<String>,
 
-        #[arg(short = 'D', long)]
+        #[arg(short = 'D', long, value_name = "YYYY-MM-DD (HH:MM)")]
         due_date: Option<String>,
     },
 
     // Completes a todo item given an id or name
     Complete {
+        id: Option<i32>,
+
         #[arg(short = 'N', long)]
         name: Option<String>,
-
-        #[arg(short = 'I', long)]
-        id: Option<i32>,
     },
 
     // Removes a todo item given an id or name
     Remove {
+        id: Option<i32>,
+
         #[arg(short = 'N', long)]
         name: Option<String>,
-
-        #[arg(short = 'I', long)]
-        id: Option<i32>,
     },
 
     // Lists todo items
