@@ -74,7 +74,7 @@ pub fn add_item(
             name,
             description,
             create_date.to_string(),
-            due_date.and_then(|x| Some(x.to_string())),
+            due_date.map(|x| x.to_string()),
         ),
     )?;
     Ok(())

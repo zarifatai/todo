@@ -1,8 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
 
-use dirs;
-
 use crate::models::Identifier;
 
 pub fn resolve_identifier(name: Option<String>, id: Option<i32>) -> Option<Identifier> {
