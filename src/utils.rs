@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use chrono::NaiveDateTime;
+use chrono::{NaiveDate, NaiveDateTime};
 use dirs;
 
 use crate::models::{Identifier, Item};
@@ -49,8 +49,17 @@ pub fn is_valid_sqlite_column_name(name: &str) -> bool {
 }
 
 pub fn parse_datetime_str(due_date_string: Option<String>) -> Option<NaiveDateTime> {
-    due_date_string.and_then(|x| {
-        let datetime_format = "%Y-%m-%d %H:%M:%S";
-        NaiveDateTime::parse_from_str(&x, datetime_format).ok()
-    })
+    let s = due_date_string?;
+
+    if let Ok(dt) = NaiveDateTime::parse_from_str(&s, "%Y-%m-%d %H:%M") {
+        Some(dt)
+    } else {
+        match NaiveDate::parse_from_str(&s, "%Y-%m-%d") {
+            Ok(d) => d.and_hms_opt(0, 0, 0),
+            Err(e) => {
+                eprintln!("Failed to parse datetime {}: {}", s, e);
+                None
+            }
+        }
+    }
 }
