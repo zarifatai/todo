@@ -16,8 +16,8 @@ pub fn run(
     Ok(())
 }
 
-fn parse_datetime_str(due_date_string: Option<String>) -> Option<NaiveDateTime> {
-    let s = due_date_string?;
+fn parse_datetime_str(datetime_string: Option<String>) -> Option<NaiveDateTime> {
+    let s = datetime_string?;
 
     if let Ok(dt) = NaiveDateTime::parse_from_str(&s, "%Y-%m-%d %H:%M") {
         Some(dt)
