@@ -1,8 +1,7 @@
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
-#[command(name = "todo")]
-#[command(about = "A simple CLI to do application", long_about = None)]
+#[command(version, about)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Command,
@@ -10,7 +9,7 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
-    // Adds a new todo item
+    /// Adds a new todo item
     Add {
         name: String,
 
@@ -21,7 +20,7 @@ pub enum Command {
         due_date: Option<String>,
     },
 
-    // Completes a todo item given an id or name
+    /// Completes a todo item given an id or name
     Complete {
         id: Option<i32>,
 
@@ -29,7 +28,7 @@ pub enum Command {
         name: Option<String>,
     },
 
-    // Removes a todo item given an id or name
+    /// Removes a todo item given an id or name
     Remove {
         id: Option<i32>,
 
@@ -37,7 +36,7 @@ pub enum Command {
         name: Option<String>,
     },
 
-    // Lists todo items
+    /// Lists todo items
     List {
         #[arg(short = 'A', long)]
         all: bool,

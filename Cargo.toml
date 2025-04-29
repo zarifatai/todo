@@ -2,6 +2,7 @@
 name = "todo"
 version = "0.2.2"
 edition = "2024"
+description = "A simple CLI to do application"
 
 [dependencies]
 chrono = "0.4.40"
