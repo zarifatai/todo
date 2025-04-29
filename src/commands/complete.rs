@@ -1,11 +1,11 @@
 use rusqlite::{Connection, Result};
 
+use super::common_utils;
 use crate::database;
 use crate::models::Identifier;
-use crate::utils;
 
 pub fn run(connection: Connection, name: Option<String>, id: Option<i32>) -> Result<()> {
-    match utils::resolve_identifier(name, id) {
+    match common_utils::resolve_identifier(name, id) {
         Some(Identifier::Id(item_id)) => {
             database::operations::complete_item_by_id(connection, item_id)?;
             println!("Item completed!");

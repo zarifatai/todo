@@ -1,8 +1,8 @@
 use chrono::NaiveDateTime;
 use rusqlite::{Connection, Result};
 
+use super::db_utils;
 use crate::models::{Item, SqliteColumn};
-use crate::utils;
 
 pub fn create_item_table(connection: &Connection) -> Result<()> {
     connection.execute(
@@ -10,7 +10,7 @@ pub fn create_item_table(connection: &Connection) -> Result<()> {
             id    INTEGER PRIMARY KEY,
             name  TEXT NOT NULL,
             description TEXT,
-            active INTEGER NOT NULL DEFAULT 1)",
+            active INTEGER NOT NULL DEFAULT 1);",
         (),
     )?;
     Ok(())
@@ -20,7 +20,7 @@ pub fn create_meta_table(connection: &Connection) -> Result<()> {
     connection.execute(
         "CREATE TABLE IF NOT EXISTS meta (
             key   TEXT PRIMARY KEY,
-            value TEXT)",
+            value TEXT);",
         (),
     )?;
     Ok(())
@@ -28,35 +28,35 @@ pub fn create_meta_table(connection: &Connection) -> Result<()> {
 
 pub fn add_initial_meta_version(connection: &Connection) -> Result<()> {
     connection.execute(
-        "INSERT OR IGNORE INTO meta (key, value) VALUES ('schema_version', '1')",
+        "INSERT OR IGNORE INTO meta (key, value) VALUES ('schema_version', '1');",
         (),
     )?;
     Ok(())
 }
 
 pub fn get_schema_version(connection: &Connection) -> Result<i32> {
-    let mut statement = connection.prepare("SELECT value FROM meta WHERE key='schema_version'")?;
+    let mut statement = connection.prepare("SELECT value FROM meta WHERE key='schema_version';")?;
     let version: String = statement.query_row((), |row| row.get(0))?;
     Ok(version.parse::<i32>().unwrap_or(1))
 }
 
 pub fn update_schema_version(connection: &Connection, version: i32) -> Result<()> {
     connection.execute(
-        "UPDATE meta SET value = ?1 WHERE key = 'schema_version'",
+        "UPDATE meta SET value = ?1 WHERE key = 'schema_version';",
         (version,),
     )?;
     Ok(())
 }
 
 pub fn add_column_to_item_table(connection: &Connection, column: SqliteColumn) -> Result<()> {
-    if !utils::is_valid_sqlite_column_name(&column.name) {
+    if !db_utils::is_valid_sqlite_column_name(&column.name) {
         return Err(rusqlite::Error::SqliteFailure(
             rusqlite::ffi::Error::new(1),
             Some("Invalid column name".to_string()),
         ));
     }
 
-    let statement = format!("ALTER TABLE item ADD COLUMN {} {}", column.name, column.ty);
+    let statement = format!("ALTER TABLE item ADD COLUMN {} {};", column.name, column.ty);
     connection.execute(&statement, ())?;
     Ok(())
 }
@@ -83,7 +83,7 @@ pub fn add_item(
 pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
     let mut stmt = String::from("SELECT id, name, description, active FROM item");
     if !all {
-        stmt.push_str(" WHERE active=1");
+        stmt.push_str(" WHERE active=1;");
     }
 
     let mut stmt = connection.prepare(&stmt)?;
@@ -127,5 +127,10 @@ pub fn remove_item_by_id(connection: Connection, item_id: i32) -> Result<()> {
 
 pub fn remove_item_by_name(connection: Connection, item_name: String) -> Result<()> {
     connection.execute("DELETE FROM item WHERE name = ?1;", (item_name,))?;
+    Ok(())
+}
+
+pub fn remove_all_items(connection: Connection) -> Result<()> {
+    connection.execute("DELETE FROM item;", ())?;
     Ok(())
 }

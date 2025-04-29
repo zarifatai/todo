@@ -34,6 +34,9 @@ pub enum Command {
 
         #[arg(short = 'N', long)]
         name: Option<String>,
+
+        #[arg(short = 'A', long)]
+        all: bool,
     },
 
     /// Lists todo items

@@ -2,7 +2,9 @@ mod cli;
 mod commands;
 mod database;
 mod models;
-mod utils;
+
+use std::fs;
+use std::path::PathBuf;
 
 use clap::Parser;
 
@@ -10,7 +12,7 @@ use cli::{Cli, Command};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let arguments = Cli::parse();
-    let database_path = utils::create_app_directory()?;
+    let database_path = create_app_directory()?;
 
     let connection = database::establish_connection(database_path.join("database.db"))?;
     database::initialize_database(&connection)?;
@@ -22,8 +24,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             due_date,
         } => commands::add::run(connection, name, description, due_date)?,
         Command::Complete { name, id } => commands::complete::run(connection, name, id)?,
-        Command::Remove { name, id } => commands::remove::run(connection, name, id)?,
+        Command::Remove { name, id, all } => commands::remove::run(connection, name, id, all)?,
         Command::List { all } => commands::list::run(connection, all)?,
     }
     Ok(())
+}
+
+fn create_app_directory() -> std::io::Result<PathBuf> {
+    let home_dir = dirs::home_dir().expect("Failed to determine home directory");
+    let app_path = home_dir.join(".local").join("share").join("todo");
+    fs::create_dir_all(&app_path)?;
+    Ok(app_path)
 }

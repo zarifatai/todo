@@ -44,3 +44,13 @@ fn migration_v2(connection: &Connection) -> Result<()> {
     }
     Ok(())
 }
+
+mod db_utils {
+    pub fn is_valid_sqlite_column_name(name: &str) -> bool {
+        // Only allow alphanumeric and underscore, must start with a letter or underscore
+        let first_char = name.chars().next().unwrap_or(' ');
+
+        (first_char.is_alphabetic() || first_char == '_')
+            && name.chars().all(|c| c.is_alphanumeric() || c == '_')
+    }
+}
