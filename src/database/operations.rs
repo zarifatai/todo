@@ -70,18 +70,14 @@ pub fn add_item(
 ) -> Result<()> {
     connection.execute(
         "INSERT INTO item (name, description, create_date, due_date) VALUES (?1, ?2, ?3, ?4);",
-        (
-            name,
-            description,
-            create_date.to_string(),
-            due_date.map(|x| x.to_string()),
-        ),
+        (name, description, create_date, due_date),
     )?;
     Ok(())
 }
 
 pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
-    let mut stmt = String::from("SELECT id, name, description, active FROM item");
+    let mut stmt =
+        String::from("SELECT id, name, description, active, create_date, due_date FROM item");
     if !all {
         stmt.push_str(" WHERE active=1;");
     }
@@ -89,10 +85,12 @@ pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
     let mut stmt = connection.prepare(&stmt)?;
     let items_iter = stmt.query_map([], |row| {
         Ok(Item {
-            id: row.get(0)?,
-            name: row.get(1)?,
-            description: row.get(2)?,
-            active: row.get(3)?,
+            id: row.get("id")?,
+            name: row.get("name")?,
+            description: row.get("description")?,
+            active: row.get("active")?,
+            create_date: row.get("create_date")?,
+            due_date: row.get("due_date")?,
         })
     })?;
 

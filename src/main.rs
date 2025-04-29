@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         } => commands::add::run(connection, name, description, due_date)?,
         Command::Complete { name, id } => commands::complete::run(connection, name, id)?,
         Command::Remove { name, id, all } => commands::remove::run(connection, name, id, all)?,
-        Command::List { all } => commands::list::run(connection, all)?,
+        Command::List { all, create_date } => commands::list::run(connection, all, create_date)?,
     }
     Ok(())
 }

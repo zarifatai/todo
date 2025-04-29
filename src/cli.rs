@@ -16,7 +16,7 @@ pub enum Command {
         #[arg(short = 'd', long)]
         description: Option<String>,
 
-        #[arg(short = 'D', long, value_name = "YYYY-MM-DD (HH:MM)")]
+        #[arg(short = 'D', long = "due-date", value_name = "YYYY-MM-DD (HH:MM)")]
         due_date: Option<String>,
     },
 
@@ -43,5 +43,8 @@ pub enum Command {
     List {
         #[arg(short = 'A', long)]
         all: bool,
+
+        #[arg(short = 'C', long = "create-date")]
+        create_date: bool,
     },
 }
