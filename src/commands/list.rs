@@ -21,6 +21,11 @@ fn print_item(item: Item, create_date: bool) {
         output.push_str("[x]")
     }
     output.push_str(format!(" {}:", item.id).as_str());
+
+    if let Some(x) = item.label {
+        output.push_str(format!(" [{}]", x).as_str());
+    }
+
     output.push_str(format!(" {}", item.name).as_str());
 
     if let Some(x) = item.description {

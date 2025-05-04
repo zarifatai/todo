@@ -8,10 +8,11 @@ pub fn run(
     name: String,
     description: Option<String>,
     due_date: Option<String>,
+    label: Option<String>,
 ) -> Result<()> {
     let create_date = Local::now().naive_local();
     let due_date = parse_datetime_str(due_date);
-    database::operations::add_item(connection, name, description, create_date, due_date)?;
+    database::operations::add_item(connection, name, description, create_date, due_date, label)?;
     println!("Item added!");
     Ok(())
 }

@@ -18,6 +18,9 @@ pub enum Command {
 
         #[arg(short = 'D', long = "due-date", value_name = "YYYY-MM-DD (HH:MM)")]
         due_date: Option<String>,
+
+        #[arg(short = 'L', long)]
+        label: Option<String>,
     },
 
     /// Completes a todo item given an id or name

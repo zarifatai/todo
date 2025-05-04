@@ -9,17 +9,19 @@ pub fn add_item(
     description: Option<String>,
     create_date: NaiveDateTime,
     due_date: Option<NaiveDateTime>,
+    label: Option<String>,
 ) -> Result<()> {
     connection.execute(
-        "INSERT INTO item (name, description, create_date, due_date) VALUES (?1, ?2, ?3, ?4);",
-        (name, description, create_date, due_date),
+        "INSERT INTO task (name, description, create_date, due_date, label) VALUES (?1, ?2, ?3, ?4, ?5);",
+        (name, description, create_date, due_date, label),
     )?;
     Ok(())
 }
 
 pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
-    let mut stmt =
-        String::from("SELECT id, name, description, active, create_date, due_date FROM item");
+    let mut stmt = String::from(
+        "SELECT id, name, description, active, create_date, due_date, label FROM task",
+    );
     if !all {
         stmt.push_str(" WHERE active=1;");
     }
@@ -33,6 +35,7 @@ pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
             active: row.get("active")?,
             create_date: row.get("create_date")?,
             due_date: row.get("due_date")?,
+            label: row.get("label")?,
         })
     })?;
 
