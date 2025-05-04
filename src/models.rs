@@ -1,5 +1,3 @@
-use std::fmt;
-
 use chrono::NaiveDateTime;
 
 #[derive(Debug, Clone)]
@@ -10,36 +8,10 @@ pub struct Item {
     pub active: bool,
     pub create_date: NaiveDateTime,
     pub due_date: Option<NaiveDateTime>,
+    pub label: Option<String>,
 }
 
 pub enum Identifier {
     Id(i32),
     Name(String),
-}
-
-pub struct SqliteColumn {
-    pub name: String,
-    pub ty: SqliteColumnType,
-}
-
-#[derive(Clone, Copy)]
-#[allow(dead_code)]
-pub enum SqliteColumnType {
-    Integer,
-    Text,
-    Blob,
-    Real,
-    Numeric,
-}
-
-impl fmt::Display for SqliteColumnType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            SqliteColumnType::Integer => write!(f, "INTEGER"),
-            SqliteColumnType::Text => write!(f, "TEXT"),
-            SqliteColumnType::Blob => write!(f, "BLOB"),
-            SqliteColumnType::Real => write!(f, "REAL"),
-            SqliteColumnType::Numeric => write!(f, "NUMERIC"),
-        }
-    }
 }

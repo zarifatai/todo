@@ -7,6 +7,7 @@ use std::fs;
 use std::path::PathBuf;
 
 use clap::Parser;
+use rusqlite::Connection;
 
 use cli::{Cli, Command};
 
@@ -14,8 +15,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let arguments = Cli::parse();
     let database_path = create_app_directory()?;
 
-    let connection = database::establish_connection(database_path.join("database.db"))?;
-    database::initialize_database(&connection)?;
+    let mut connection = Connection::open(database_path.join("database.db"))?;
+    let migration_manager = database::migration::initialize_migrations();
+    migration_manager.run_migrations(&mut connection)?;
 
     match arguments.command {
         Command::Add {
