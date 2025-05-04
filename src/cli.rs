@@ -9,7 +9,7 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
-    /// Adds a new todo item
+    /// Adds a new task
     Add {
         name: String,
 
@@ -23,7 +23,7 @@ pub enum Command {
         label: Option<String>,
     },
 
-    /// Completes a todo item given an id or name
+    /// Completes a task given an id or name
     Complete {
         id: Option<i32>,
 
@@ -31,7 +31,7 @@ pub enum Command {
         name: Option<String>,
     },
 
-    /// Removes a todo item given an id or name
+    /// Removes a task given an id or name
     Remove {
         id: Option<i32>,
 
@@ -42,7 +42,7 @@ pub enum Command {
         all: bool,
     },
 
-    /// Lists todo items
+    /// Lists tasks
     List {
         #[arg(short = 'A', long)]
         all: bool,

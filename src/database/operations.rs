@@ -1,9 +1,9 @@
 use chrono::NaiveDateTime;
 use rusqlite::{Connection, Result};
 
-use crate::models::Item;
+use crate::models::Task;
 
-pub fn add_item(
+pub fn add_task(
     connection: Connection,
     name: String,
     description: Option<String>,
@@ -18,7 +18,7 @@ pub fn add_item(
     Ok(())
 }
 
-pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
+pub fn get_tasks(connection: Connection, all: bool) -> Result<Vec<Task>> {
     let mut stmt = String::from(
         "SELECT id, name, description, active, create_date, due_date, label FROM task",
     );
@@ -27,8 +27,8 @@ pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
     }
 
     let mut stmt = connection.prepare(&stmt)?;
-    let items_iter = stmt.query_map([], |row| {
-        Ok(Item {
+    let tasks_iter = stmt.query_map([], |row| {
+        Ok(Task {
             id: row.get("id")?,
             name: row.get("name")?,
             description: row.get("description")?,
@@ -39,41 +39,41 @@ pub fn get_items(connection: Connection, all: bool) -> Result<Vec<Item>> {
         })
     })?;
 
-    let mut items = Vec::new();
-    for item_result in items_iter {
-        items.push(item_result?);
+    let mut tasks = Vec::new();
+    for task_result in tasks_iter {
+        tasks.push(task_result?);
     }
 
-    Ok(items)
+    Ok(tasks)
 }
 
-pub fn complete_item_by_id(connection: Connection, item_id: i32) -> Result<()> {
+pub fn complete_task_by_id(connection: Connection, task_id: i32) -> Result<()> {
     connection.execute(
         "UPDATE task SET active = 0 WHERE id = ?1 AND active = 1;",
-        (item_id,),
+        (task_id,),
     )?;
     Ok(())
 }
 
-pub fn complete_item_by_name(connection: Connection, item_name: String) -> Result<()> {
+pub fn complete_task_by_name(connection: Connection, task_name: String) -> Result<()> {
     connection.execute(
         "UPDATE task SET active = 0 WHERE name = ?1 AND active = 1;",
-        (&item_name,),
+        (&task_name,),
     )?;
     Ok(())
 }
 
-pub fn remove_item_by_id(connection: Connection, item_id: i32) -> Result<()> {
-    connection.execute("DELETE FROM task WHERE id = ?1;", (item_id,))?;
+pub fn remove_task_by_id(connection: Connection, task_id: i32) -> Result<()> {
+    connection.execute("DELETE FROM task WHERE id = ?1;", (task_id,))?;
     Ok(())
 }
 
-pub fn remove_item_by_name(connection: Connection, item_name: String) -> Result<()> {
-    connection.execute("DELETE FROM task WHERE name = ?1;", (item_name,))?;
+pub fn remove_task_by_name(connection: Connection, task_name: String) -> Result<()> {
+    connection.execute("DELETE FROM task WHERE name = ?1;", (task_name,))?;
     Ok(())
 }
 
-pub fn remove_all_items(connection: Connection) -> Result<()> {
+pub fn remove_all_tasks(connection: Connection) -> Result<()> {
     connection.execute("DELETE FROM task;", ())?;
     Ok(())
 }

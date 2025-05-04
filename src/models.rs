@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
 
 #[derive(Debug, Clone)]
-pub struct Item {
+pub struct Task {
     pub name: String,
     pub id: i32,
     pub description: Option<String>,

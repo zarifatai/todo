@@ -12,8 +12,8 @@ pub fn run(
 ) -> Result<()> {
     let create_date = Local::now().naive_local();
     let due_date = parse_datetime_str(due_date);
-    database::operations::add_item(connection, name, description, create_date, due_date, label)?;
-    println!("Item added!");
+    database::operations::add_task(connection, name, description, create_date, due_date, label)?;
+    println!("Task added!");
     Ok(())
 }
 
