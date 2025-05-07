@@ -5,8 +5,13 @@ use rusqlite::{Connection, Result};
 use crate::database;
 use crate::models::Task;
 
-pub fn run(connection: Connection, all: bool, create_date: bool) -> Result<()> {
-    let tasks = database::operations::get_tasks(connection, all)?;
+pub fn run(
+    connection: Connection,
+    all: bool,
+    create_date: bool,
+    label: Option<String>,
+) -> Result<()> {
+    let tasks = database::operations::get_tasks(connection, all, label)?;
     for task in tasks {
         print_task(task, create_date);
     }

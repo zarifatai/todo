@@ -18,16 +18,27 @@ pub fn add_task(
     Ok(())
 }
 
-pub fn get_tasks(connection: Connection, all: bool) -> Result<Vec<Task>> {
+pub fn get_tasks(connection: Connection, all: bool, label: Option<String>) -> Result<Vec<Task>> {
     let mut stmt = String::from(
         "SELECT id, name, description, active, create_date, due_date, label FROM task",
     );
+    let mut conditions = Vec::new();
+    let mut params: Vec<&dyn rusqlite::ToSql> = Vec::new();
+
+    if let Some(ref x) = label {
+        conditions.push("label=?");
+        params.push(x);
+    }
     if !all {
-        stmt.push_str(" WHERE active=1;");
+        conditions.push("active=1")
+    }
+    if !conditions.is_empty() {
+        stmt.push_str(" WHERE ");
+        stmt.push_str(&conditions.join(" AND "));
     }
 
     let mut stmt = connection.prepare(&stmt)?;
-    let tasks_iter = stmt.query_map([], |row| {
+    let tasks_iter = stmt.query_map(&params[..], |row| {
         Ok(Task {
             id: row.get("id")?,
             name: row.get("name")?,
@@ -77,7 +88,3 @@ pub fn remove_all_tasks(connection: Connection) -> Result<()> {
     connection.execute("DELETE FROM task;", ())?;
     Ok(())
 }
-//
-// pub fn modify_name(connection: Connection) -> Result<()> {
-//     connection.execute("UPDATE task (name) VALUES (?1, ?2, ?3, ?4);")
-// }

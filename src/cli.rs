@@ -49,5 +49,8 @@ pub enum Command {
 
         #[arg(short = 'C', long = "create-date")]
         create_date: bool,
+
+        #[arg(short = 'L', long)]
+        label: Option<String>,
     },
 }
