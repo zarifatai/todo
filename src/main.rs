@@ -13,7 +13,7 @@ use cli::{Cli, Command};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let arguments = Cli::parse();
-    let database_path = create_app_directory()?;
+    let database_path = _create_app_directory()?;
 
     let mut connection = Connection::open(database_path.join("database.db"))?;
     let migration_manager = database::migration::initialize_migrations();
@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn create_app_directory() -> std::io::Result<PathBuf> {
+fn _create_app_directory() -> std::io::Result<PathBuf> {
     let home_dir = dirs::home_dir().expect("Failed to determine home directory");
     let app_path = home_dir.join(".local").join("share").join("todo");
     fs::create_dir_all(&app_path)?;
